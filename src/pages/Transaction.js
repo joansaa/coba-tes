@@ -32,7 +32,7 @@ function TransactionList({ transactions }) {
     return (
         <div className="overflow-x-auto">
             <div className="min-w-full bg-white border border-gray-300 overflow-hidden sm:overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-300">
+                <table className="min-w-full rounded-lg bg-white border border-gray-300">
                     <thead>
                         <tr className="text-left border-b bg-gray-50">
                             <th className="p-4">
@@ -56,17 +56,17 @@ function TransactionList({ transactions }) {
                                 <td className="px-4">{new Date().toLocaleDateString()}</td> {/* Placeholder for date */}
                                 <td className="px-4">
                                     <span className="inline-block px-3 py-1 bg-green-200 rounded-full text-green-700">
-                                        Available
+                                        Completed
                                     </span>
                                 </td>
                                 <td className="p-4 space-x-2 flex">
-                                    <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                                    <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                                         <i className="codicon codicon-eye text-gray-600"></i>
                                     </button>
-                                    <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                                    <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                                         <i className="codicon codicon-edit text-gray-600"></i>
                                     </button>
-                                    <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                                    <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                                         <i className="codicon codicon-trash text-gray-600"></i>
                                     </button>
                                 </td>

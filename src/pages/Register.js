@@ -1,10 +1,17 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const navigate = useNavigate();
+
+    const handleRegister = (e) => {
+        e.preventDefault();
+        // Logic for registration can be added here
+        navigate('/'); // Redirect to the login page
+    };
+
     return (
         <div className="flex h-screen bg-gradient-to-r from-blue-500 to-blue-700">
-
             <div className="flex flex-col items-start justify-center w-full lg:w-6/10 bg-blue-500 p-8 lg:pl-32">
                 <div className="text-left text-white space-y-4">
                     <h1 className="text-4xl font-bold">GoFinance</h1>
@@ -22,7 +29,7 @@ const Register = () => {
                         <p className="text-gray-800">Sign Up to Get Started</p>
                     </div>
                     
-                    <form className="mt-8 space-y-6">
+                    <form className="mt-8 space-y-6" onSubmit={handleRegister}>
                         <div className="relative">
                             <i className="bx bx-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             <input

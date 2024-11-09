@@ -12,7 +12,7 @@ const Detail = ({ transactions, onClose }) => {
         setTransaction(selectedTransaction);
     }, [transactionId, transactions]);
 
-    if (!transaction) return null; // Display nothing until transaction is found
+    if (!transaction) return null;
 
     return (
         <div className="modal-overlay">
