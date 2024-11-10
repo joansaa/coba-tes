@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const AddTransaction = ({ onClose }) => {
+const AddTransaction = ({ onClose, onAdd }) => {
     const [item, setItem] = useState('');
     const [price, setPrice] = useState('');
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('');
 
-    const handleSubmit = () => {
-        console.log({ item, price, date, status });
-        onClose();  // Close modal after submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const newTransaction = {
+            id: Date.now(), // Menggunakan timestamp sebagai ID unik
+            title: item,
+            price: parseFloat(price),
+            date: date,
+            status: status,
+        };
+        onAdd(newTransaction);  // Kirim data baru ke Dashboard
+        onClose();  // Tutup modal setelah submit
     };
 
     return (
@@ -28,7 +36,7 @@ const AddTransaction = ({ onClose }) => {
                     </button>
                 </div>
 
-                <form className="mt-8 space-y-6">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                     <div className="text-left mb-4">
                         <label className="font-semibold text-gray-800">Item</label>
                         <div className="relative mt-1">
@@ -91,13 +99,14 @@ const AddTransaction = ({ onClose }) => {
 
                     <div className="text-center">
                         <button 
+                            type="submit"
                             className="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            onClick={handleSubmit}>
+                        >
                             Add
                         </button>
                     </div>
                 </form>
-
+                
             </div>
         </div>
     );

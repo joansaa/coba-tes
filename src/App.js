@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AddTransaction from './pages/Add';
+import Dashboard from './pages/Dashboard';
+import Detail from './pages/Detail';
+import EditTransaction from './pages/Edit';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import AddTransaction from './pages/Add';
 import TransactionList from './pages/Transaction';
-import Detail from './pages/Detail';
 import './index.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/edit/:id" element={<EditTransaction />} />
             <Route path="/transaction/:id" element={<Detail />} />
         </Routes>
     </Router>

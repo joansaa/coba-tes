@@ -1,16 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AddTransaction from './Add';
+import EditTransaction from './Edit';
+import Detail from './Detail';
 import TransactionList from './Transaction';
 import GoFinanceLogo from '../assets/GoFinance.png';
 
 const Dashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [transactions, setTransactions] = useState([]);
+    const [transactionToEdit, setTransactionToEdit] = useState(null);
+    const [transactionToView, setTransactionToView] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+
+    const addTransaction = (newTransaction) => {
+        setTransactions((prevTransactions) => [newTransaction, ...prevTransactions]);
+    };
+
+    // Function to handle edit operation
+    const editTransaction = (updatedTransaction) => {
+        setTransactions((prevTransactions) =>
+            prevTransactions.map((transaction) =>
+                transaction.id === updatedTransaction.id ? updatedTransaction : transaction
+            )
+        );
+        setIsEditModalOpen(false); // Close the edit modal after updating
+    };
+
+    // Function to open the edit modal and set transaction to be edited
+    const handleEditTransaction = (transactionId) => {
+        const transaction = transactions.find((t) => t.id === transactionId);
+        setTransactionToEdit(transaction);
+        setIsEditModalOpen(true);
+    };
+
+    // Function to open the detail modal and set transaction to view
+    const handleViewTransaction = (transactionId) => {
+        const transaction = transactions.find((t) => t.id === transactionId);
+        setTransactionToView(transaction);
+        setIsDetailModalOpen(true);
+    };
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -28,7 +62,6 @@ const Dashboard = () => {
         fetchTransactions();
     }, []);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -56,15 +89,15 @@ const Dashboard = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleLogout = () => {
-        // Clear user session data (if applicable)
-        localStorage.clear();  // Clear any stored user data
-        setIsDropdownOpen(false);
-        navigate('/'); // Redirect to login page
-    };
-
     return (
         <div className="h-screen flex flex-col bg-gray-100">
+            {/* Pass the handleEditTransaction as a prop to TransactionList */}
+            <TransactionList 
+                transactions={transactions} 
+                onEdit={handleEditTransaction}
+                onView={handleViewTransaction}
+            />
+
             <header className="bg-blue-600 p-4 flex justify-between items-center text-white lg:pr-16">
                 <div className="flex items-center space-x-4">
                     <Link to="/" className="ml-12">
@@ -82,9 +115,7 @@ const Dashboard = () => {
                     </button>
 
                     {isDropdownOpen && (
-                        <div
-                            className="absolute right-0 mt-32 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
-                        >
+                        <div className="absolute right-0 mt-32 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
                             <button
                                 className="w-full text-left px-4 py-2 text-black hover:bg-gray-100"
                                 onClick={() => {
@@ -96,7 +127,10 @@ const Dashboard = () => {
                             </button>
                             <button
                                 className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 flex items-center"
-                                onClick={handleLogout}
+                                onClick={() => {
+                                    setIsDropdownOpen(false);
+                                    navigate('/logout');
+                                }}
                             >
                                 <i className="bx bx-log-out mr-2"></i> Logout
                             </button>
@@ -131,13 +165,33 @@ const Dashboard = () => {
                     </div>
 
                     <div className="overflow-x-auto max-w-full">
-                        <TransactionList transactions={transactions} />
+                        <TransactionList 
+                            transactions={transactions} 
+                            onEdit={handleEditTransaction}
+                            onView={handleViewTransaction}
+                        />
                     </div>
                 </div>
             </main>
 
             {isModalOpen && (
-                <AddTransaction onClose={() => setIsModalOpen(false)} />
+                <AddTransaction onClose={() => setIsModalOpen(false)} onAdd={addTransaction} />
+            )}
+
+            {isEditModalOpen && (
+                <EditTransaction 
+                    onClose={() => setIsEditModalOpen(false)} 
+                    onEdit={editTransaction} 
+                    initialData={transactionToEdit} 
+                />
+            )}
+
+            {isDetailModalOpen && transactionToView && (
+                <Detail 
+                    transactions={transactions} 
+                    onClose={() => setIsDetailModalOpen(false)}
+                    transaction={transactionToView}
+                />
             )}
         </div>
     );

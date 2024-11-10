@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function TransactionList({ transactions }) {
+function TransactionList({ transactions, onEdit, onView }) {
     const itemsPerPage = 10;
     const totalItems = transactions.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const [currentPage, setCurrentPage] = useState(1);
-    const navigate = useNavigate(); // Use navigate for redirection
+    const navigate = useNavigate();
 
     // Get the transactions for the current page
     const currentTransactions = transactions.slice(
@@ -29,6 +29,15 @@ function TransactionList({ transactions }) {
         }
     };
 
+    const handleViewDetails = (transactionId) => {
+        navigate(`/detail/${transactionId}`);
+    };
+
+    // Function to handle edit button click
+    const handleEdit = (transactionId) => {
+        onEdit(transactionId); // Call onEdit with the transaction ID
+    };
+
     return (
         <div className="overflow-x-auto">
             <div className="min-w-full bg-white border border-gray-300 overflow-hidden sm:overflow-x-auto">
@@ -46,24 +55,34 @@ function TransactionList({ transactions }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentTransactions.map((transaction, index) => (
-                            <tr key={index}>
+                        {currentTransactions.map((transaction) => (
+                            <tr key={transaction.id}>
                                 <td className="p-4">
                                     <input type="checkbox" />
                                 </td>
-                                <td className="px-4">{truncateText(transaction.title, 50)}</td> {/* Display truncated product title */}
-                                <td className="px-4">${transaction.price.toFixed(2)}</td> {/* Display price */}
-                                <td className="px-4">{new Date().toLocaleDateString()}</td> {/* Placeholder for date */}
+                                <td className="px-4">{truncateText(transaction.title, 50)}</td>
+                                <td className="px-4">${transaction.price.toFixed(2)}</td>
+                                <td className="px-4">{new Date().toLocaleDateString()}</td>
                                 <td className="px-4">
-                                    <span className="inline-block px-3 py-1 bg-green-200 rounded-full text-green-700">
-                                        Completed
+                                    <span className={`inline-block px-3 py-1 rounded-full ${
+                                        transaction.status === 'Pending' 
+                                            ? 'bg-yellow-200 text-yellow-700'
+                                            : 'bg-green-200 text-green-700'
+                                    }`}>
+                                        {transaction.status || 'Completed'}
                                     </span>
                                 </td>
                                 <td className="p-4 space-x-2 flex">
-                                    <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                    <button 
+                                        onClick={() => onView(transaction.id)} 
+                                        className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+                                    >
                                         <i className="codicon codicon-eye text-gray-600"></i>
                                     </button>
-                                    <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                    <button
+                                        onClick={() => handleEdit(transaction.id)}
+                                        className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+                                    >
                                         <i className="codicon codicon-edit text-gray-600"></i>
                                     </button>
                                     <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
